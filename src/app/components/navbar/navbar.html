@@ -21,7 +21,6 @@
         </svg>
       </div>
       <span class="text-[10px] sm:text-xs font-semibold text-center whitespace-nowrap transition-all duration-300"
-            [class.text-white]="activeView === 'weather'"
             [class.drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]]="activeView === 'weather' && (windowWidth < 640)">Weather</span>
     </button>
 
@@ -36,7 +35,6 @@
         </svg>
       </div>
       <span class="text-[10px] sm:text-xs font-semibold text-center whitespace-nowrap transition-all duration-300"
-            [class.text-white]="activeView === 'emergencies'"
             [class.drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]]="activeView === 'emergencies' && (windowWidth < 640)">Emergency</span>
     </button>
   </div>

@@ -1,0 +1,11 @@
+#emergenciesMap {
+  height: 100vh !important;
+  width: 100% !important;
+  position: relative !important;
+  z-index: 0;
+}
+
+.custom-emergency-marker {
+  background: transparent;
+  border: none;
+}

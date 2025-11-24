@@ -1,0 +1,14 @@
+<div class="flex h-screen overflow-hidden">
+  <!-- Side Navbar - Responsive width -->
+  <div class="w-20 sm:w-24 lg:w-28 flex-shrink-0">
+    <app-navbar [activeView]="currentView" (viewChange)="onViewChange($event)"></app-navbar>
+  </div>
+
+  <!-- Main Map View (Remaining width) -->
+  <div class="flex-1">
+    <app-weather-map *ngIf="currentView === 'weather'"></app-weather-map>
+    <app-emergencies-map *ngIf="currentView === 'emergencies'"></app-emergencies-map>
+  </div>
+</div>
+
+<router-outlet />

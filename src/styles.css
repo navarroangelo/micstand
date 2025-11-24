@@ -1,0 +1,300 @@
+/* Modern, Sleek, Minimal Disaster Response App Styles */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* CSS Variables for Custom Color Palette */
+  :root {
+    --color-navy: #273043;
+    --color-blue-grey: #9197AE;
+    --color-cream: #EFF6EE;
+    --color-red-bright: #F02D3A;
+    --color-red-deep: #DD0426;
+    --color-black: #141414;
+    --color-light-grey: #EEF0F2;
+
+    /* Spacing system */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+
+    /* Border radius */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.375rem;
+    --radius-lg: 0.5rem;
+    --radius-xl: 0.75rem;
+
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Global resets and styles */
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--color-light-grey);
+    color: var(--color-black);
+  }
+
+  app-root {
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
+
+  /* Improve button and interactive element focus states */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--color-navy);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* Modern Card Style */
+  .card-modern {
+    @apply bg-base-100 rounded-lg shadow-soft border border-base-300/20;
+    backdrop-filter: blur(10px);
+    transition: all var(--transition-base);
+  }
+
+  .card-modern:hover {
+    @apply shadow-medium;
+    transform: translateY(-2px);
+  }
+
+  /* Glassmorphism Effect */
+  .glass-effect {
+    background: rgba(239, 246, 238, 0.7);
+    backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(145, 151, 174, 0.2);
+  }
+
+  /* Modern Button Overrides */
+  .btn {
+    @apply font-medium tracking-wide;
+    transition: all var(--transition-base);
+    border: none;
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn:active {
+    transform: translateY(0);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--color-navy) 0%, #1a1f2e 100%);
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #1a1f2e 0%, var(--color-navy) 100%);
+  }
+
+  .btn-error {
+    background: linear-gradient(135deg, var(--color-red-bright) 0%, var(--color-red-deep) 100%);
+  }
+
+  .btn-error:hover {
+    background: linear-gradient(135deg, var(--color-red-deep) 0%, var(--color-red-bright) 100%);
+  }
+
+  /* Smooth Animations */
+  .animate-fade-in {
+    animation: fadeIn var(--transition-slow) ease-in;
+  }
+
+  .animate-slide-up {
+    animation: slideUp var(--transition-base) ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Modern Input Styles */
+  .input,
+  .select,
+  .textarea {
+    @apply border-base-300/40;
+    transition: all var(--transition-fast);
+  }
+
+  .input:focus,
+  .select:focus,
+  .textarea:focus {
+    @apply border-primary/60 shadow-soft;
+    outline: none;
+  }
+
+  /* Modern Alert Styles */
+  .alert {
+    @apply rounded-lg border-l-4;
+    backdrop-filter: blur(8px);
+  }
+
+  .alert-info {
+    @apply bg-base-200/80 border-primary;
+  }
+
+  .alert-warning {
+    @apply bg-base-200/80 border-warning;
+  }
+
+  .alert-error {
+    @apply bg-base-200/80 border-error;
+  }
+
+  /* Minimal Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--color-blue-grey);
+    border-radius: 3px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--color-navy);
+  }
+}
+
+@layer utilities {
+  /* Text utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Smooth transitions */
+  .transition-smooth {
+    transition: all var(--transition-base);
+  }
+
+  /* Hover lift effect */
+  .hover-lift {
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Focus ring utilities */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
+  }
+
+  /* Gradient backgrounds */
+  .bg-gradient-navy {
+    background: linear-gradient(135deg, var(--color-navy) 0%, #1a1f2e 100%);
+  }
+
+  .bg-gradient-red {
+    background: linear-gradient(135deg, var(--color-red-bright) 0%, var(--color-red-deep) 100%);
+  }
+}
+
+/* Leaflet Map Styles - Critical for proper map rendering */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.leaflet-tile-container {
+  pointer-events: none;
+}
+
+.leaflet-tile {
+  pointer-events: auto;
+}
+
+/* Fix for Leaflet map not displaying tiles properly */
+.leaflet-pane,
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-tile-container,
+.leaflet-pane > svg,
+.leaflet-pane > canvas,
+.leaflet-zoom-box,
+.leaflet-image-layer,
+.leaflet-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.leaflet-container {
+  overflow: hidden;
+}
+
+.leaflet-tile {
+  filter: inherit;
+  visibility: hidden;
+}
+
+.leaflet-tile-loaded {
+  visibility: inherit;
+}
+
+.leaflet-zoom-box {
+  width: 0;
+  height: 0;
+  box-sizing: border-box;
+  z-index: 800;
+}

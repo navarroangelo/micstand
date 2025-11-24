@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EmergencyReportButton } from '../emergency-report-button/emergency-report-button';
 import { AiChatbotButton } from '../ai-chatbot-button/ai-chatbot-button';
@@ -15,14 +15,9 @@ import { environment } from '../../../environments/environment';
 export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
   private map?: L.Map;
   private markers: L.Marker[] = [];
+  isStatsOpen = false;
 
-  emergencyTypes = [
-    { id: 'fire', label: 'Fire', icon: '🔥', active: true },
-    { id: 'flood', label: 'Flood', icon: '🌊', active: true },
-    { id: 'earthquake', label: 'Earthquake', icon: '🏚️', active: true },
-  ];
-
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
   //get emergencies from JSON file
   // public/assets/json/emergencies.json
@@ -52,18 +47,23 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private getEmergencies() {
-    this.http.get<any[]>('https://api.jsonbin.io/v3/b/692432b0d0ea881f40fcb70a', {
-      headers: {
-        'X-Master-Key': environment.jsonBinApiKey
-      }
-    }).subscribe((data: any) => {
-      if (Array.isArray(data.record)) {
-        this.emergencies = data.record;
-      } else {
+    this.http.get<any[]>('assets/json/emergencies.json').subscribe({
+      next: (data: any) => {
+        console.log('Raw data received:', data);
+        if (Array.isArray(data)) {
+          this.emergencies = data;
+          console.log('Emergencies set:', this.emergencies);
+        } else {
+          this.emergencies = [];
+          console.log('Data is not an array');
+        }
+        this.updateMarkers();
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading emergencies:', error);
         this.emergencies = [];
       }
-      console.log('Fetched emergencies:', this.emergencies);
-      this.updateMarkers();
     });
   }
 
@@ -85,7 +85,7 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
       zoom: 13,
       zoomControl: false,
       preferCanvas: false,
-      attributionControl: true,
+      attributionControl: false,
       scrollWheelZoom: true,
       doubleClickZoom: true,
       boxZoom: true,
@@ -98,7 +98,7 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       minZoom: 3,
-      attribution: '© OpenStreetMap contributors',
+      attribution: '',
       tileSize: 256,
       updateWhenIdle: false,
       updateWhenZooming: false,
@@ -117,19 +117,13 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
   private addEmergencyMarkers(): void {
     if (!this.map) return;
 
-    // Use highly contrasting colors that match badges exactly
-    const highSeverityColor = '#ef4444';  // Vibrant red
-    const mediumSeverityColor = '#f59e0b'; // Bright amber orange
-    const lowSeverityColor = '#3b82f6';    // Vivid blue
-
-    this.getFilteredEmergencies().forEach((emergency: any) => {
-      const severityColor = emergency.severity === 'high' ? highSeverityColor :
-                           emergency.severity === 'medium' ? mediumSeverityColor : lowSeverityColor;
+    this.emergencies.forEach((emergency: any) => {
+      const typeColor = this.getEmergencyTypeColor(emergency.type);
       const icon = this.getEmergencyIcon(emergency.type);
 
       const customIcon = L.divIcon({
         className: 'custom-emergency-marker',
-        html: `<div style="background-color: ${severityColor}; width: 35px; height: 35px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; font-size: 18px;">${icon}</div>`,
+        html: `<div style="background-color: ${typeColor}; width: 35px; height: 35px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; font-size: 18px;">${icon}</div>`,
         iconSize: [35, 35],
         iconAnchor: [17, 17]
       });
@@ -140,7 +134,7 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
           <div style="min-width: 200px;">
             <h3 style="margin: 0 0 8px 0; font-weight: bold;">${emergency.location}</h3>
             <p style="margin: 4px 0;"><strong>Type:</strong> ${emergency.type}</p>
-            <p style="margin: 4px 0;"><strong>Severity:</strong> <span style="color: ${severityColor}; text-transform: capitalize;">${emergency.severity}</span></p>
+            <p style="margin: 4px 0;"><strong>Severity:</strong> <span style="color: ${this.getSeverityColor(emergency.severity)}; text-transform: capitalize;">${emergency.severity}</span></p>
             <p style="margin: 4px 0; font-size: 12px; color: #666;"><strong>Reported:</strong> ${emergency.timestamp.toLocaleString()}</p>
           </div>
         `);
@@ -149,41 +143,53 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  toggleFilter(typeId: string) {
-    const type = this.emergencyTypes.find(t => t.id === typeId);
-    if (type) {
-      type.active = !type.active;
-      this.updateMarkers();
-    }
-  }
-
   private updateMarkers(): void {
     // Clear existing markers
     this.markers.forEach(marker => marker.remove());
     this.markers = [];
 
-    // Re-add filtered markers
+    // Re-add markers
     this.addEmergencyMarkers();
   }
 
-  getFilteredEmergencies() {
-    const activeTypes = this.emergencyTypes.filter(t => t.active).map(t => t.id);
-    return this.emergencies.filter(e => activeTypes.includes(e.type));
-  }
-
   getEmergencyIcon(type: string): string {
-    return this.emergencyTypes.find(t => t.id === type)?.icon || '⚠️';
+    const icons: { [key: string]: string } = {
+      'fire': '🔥',
+      'flood': '🌊',
+      'earthquake': '🏚️'
+    };
+    return icons[type] || '⚠️';
   }
 
-  getActiveFilterCount(): number {
-    return this.emergencyTypes.filter(t => t.active).length;
+  getEmergencyTypeColor(type: string): string {
+    const colors: { [key: string]: string } = {
+      'fire': '#f97316',        // Red-orange for fire
+      'flood': '#3b82f6',       // Blue for flood/storm
+      'earthquake': '#92400e'   // Brown for earthquake
+    };
+    return colors[type] || '#ef4444';
   }
 
-  getEmergencyCountByType(typeId: string): number {
-    return this.emergencies.filter(e => e.type === typeId).length;
+  getSeverityColor(severity: string): string {
+    const colors: { [key: string]: string } = {
+      'high': '#ef4444',
+      'medium': '#f59e0b',
+      'low': '#3b82f6'
+    };
+    return colors[severity] || '#3b82f6';
   }
 
   getEmergencyCountBySeverity(severity: string): number {
     return this.emergencies.filter(e => e.severity === severity).length;
+  }
+
+  getEmergencyCountByType(type: string): number {
+    const count = this.emergencies.filter(e => e.type === type).length;
+    console.log(`Count for ${type}:`, count, 'Total emergencies:', this.emergencies.length);
+    return count;
+  }
+
+  toggleStats(): void {
+    this.isStatsOpen = !this.isStatsOpen;
   }
 }

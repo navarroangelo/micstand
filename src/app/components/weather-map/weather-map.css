@@ -5,25 +5,89 @@
   z-index: 0;
 }
 
+.custom-weather-marker {
+  background: transparent;
+  border: none;
+  animation: marker-pulse 2s ease-in-out infinite;
+}
+
 .custom-evacuation-marker {
   background: transparent;
   border: none;
 }
 
+/* Animations */
+@keyframes marker-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out;
+}
+
+/* Custom scrollbar for weather alerts */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.05);
   border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.3);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.4));
   border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.5);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6));
+  background-clip: padding-box;
+}
+
+/* Mobile bottom sheet animations */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up-mobile {
+  animation: slide-up 0.3s ease-out;
+}
+
+/* Ensure chatbot button stays above alerts on mobile */
+@media (max-width: 640px) {
+  .absolute.bottom-3.right-3 {
+    z-index: 450;
+  }
+
+  /* Ensure alerts don't overlap with chatbot button */
+  .sm\:hidden.absolute.bottom-3 {
+    padding-right: 0;
+  }
 }

@@ -1,33 +1,149 @@
-<div class="p-2.5 sm:p-3 lg:p-4 animate-slide-up shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col w-36 h-56 sm:w-48 sm:h-72 lg:w-52 lg:h-80 rounded-lg sm:rounded-xl flex-shrink-0" [ngClass]="getSeverityClass()">
-  <!-- Header Section -->
-  <div class="flex flex-col items-center mb-1.5 sm:mb-2 lg:mb-3">
-    <!-- Icon -->
-    <div class="w-8 h-8 sm:w-11 sm:h-11 lg:w-12 lg:h-12 rounded-full flex items-center justify-center mb-1 sm:mb-1.5 lg:mb-2 shadow-lg" [ngClass]="getIconBgClass()">
-      <span class="text-lg sm:text-xl lg:text-2xl">{{ getTypeIcon() }}</span>
+<div class="group relative p-3 sm:p-5 lg:p-5 animate-slide-up shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col w-36 h-56 sm:w-56 sm:h-72 lg:w-64 lg:h-80 rounded-xl sm:rounded-2xl flex-shrink-0 overflow-hidden hover:scale-[1.02] backdrop-blur-sm" [ngClass]="getSeverityClass()">
+  <!-- Decorative gradient overlay -->
+  <div class="absolute inset-0 bg-gradient-to-br from-white/50 to-transparent pointer-events-none"></div>
+  
+  <!-- Decorative accent bar -->
+  <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r opacity-60" [ngClass]="getAccentClass()"></div>
+  
+  <!-- Content wrapper -->
+  <div class="relative z-10 flex flex-col h-full">
+    <!-- Header Section -->
+    <div class="flex items-start justify-between mb-3 sm:mb-4">
+      <!-- Icon -->
+      <div class="w-11 h-11 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all" [ngClass]="getIconBgClass()">
+        <span class="text-2xl sm:text-3xl lg:text-3xl">{{ getTypeIcon() }}</span>
+      </div>
+      
+      <!-- Severity Badge -->
+      <span class="badge badge-sm font-bold uppercase tracking-wider text-[9px] sm:text-[10px] shadow-sm ring-1 ring-white/20" [ngClass]="getSeverityBadgeClass()">
+        {{ alert.severity }}
+      </span>
     </div>
 
-    <!-- Severity Badge -->
-    <span class="badge badge-xs sm:badge-sm font-bold uppercase tracking-wide text-[9px] sm:text-xs" [ngClass]="getSeverityBadgeClass()">
-      {{ alert.severity }}
-    </span>
-  </div>
-
-  <!-- Content Section -->
-  <div class="flex-1 flex flex-col text-center overflow-hidden">
-    <h3 class="font-bold text-xs sm:text-base lg:text-lg mb-1 sm:mb-1.5 lg:mb-2 line-clamp-2 text-gray-800 leading-tight">{{ alert.title }}</h3>
-    <p class="text-[9px] sm:text-xs text-gray-600 line-clamp-3 sm:line-clamp-4 leading-relaxed">{{ alert.message }}</p>
-  </div>
-
-  <!-- Footer Section -->
-  <div class="w-full mt-auto pt-1.5 sm:pt-2 lg:pt-3 border-t border-gray-200">
-    <div class="flex items-center justify-center gap-0.5 sm:gap-1 text-[9px] sm:text-xs text-gray-500 mb-1 sm:mb-1.5 lg:mb-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-2 w-2 sm:h-2.5 sm:w-2.5 lg:h-3 lg:w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      <span class="truncate">{{ alert.timestamp | date:'short' }}</span>
+    <!-- Content Section -->
+    <div class="flex-1 flex flex-col overflow-hidden mb-3 sm:mb-4">
+      <h3 class="font-bold text-xs sm:text-base lg:text-lg mb-1.5 sm:mb-2 line-clamp-2 text-gray-800 leading-snug">{{ alert.title }}</h3>
+      <p class="text-[9px] sm:text-xs lg:text-sm text-gray-600 line-clamp-3 sm:line-clamp-4 leading-relaxed">{{ alert.message }}</p>
     </div>
-    <button class="btn btn-xs w-full border-gray-300 text-[9px] sm:text-xs text-gray-700 bg-gray-50 hover:bg-gray-100 hover:border-gray-400 transition-colors min-h-[24px] h-6 sm:h-7">
-      View Details
-    </button>
+
+    <!-- Footer Section -->
+    <div class="w-full mt-auto pt-3 sm:pt-3.5 border-t border-gray-200/60">
+      <div class="flex items-center gap-1.5 text-[9px] sm:text-xs text-gray-500 mb-2 sm:mb-2.5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-3.5 sm:w-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="truncate font-medium">{{ alert.timestamp | date:'short' }}</span>
+      </div>
+      <button 
+        (click)="openModal()"
+        class="btn btn-xs sm:btn-sm w-full text-[9px] sm:text-xs font-semibold rounded-lg sm:rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border-0"
+        [ngClass]="getButtonClass()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-3.5 sm:w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        View Details
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Weather Alert Details Modal -->
+<div class="modal" [class.modal-open]="isModalOpen" *ngIf="isModalOpen">
+  <!-- Backdrop -->
+  <div class="modal-backdrop bg-black/50 backdrop-blur-sm" (click)="closeModal()"></div>
+
+  <!-- Modal Content -->
+  <div class="modal-box max-w-[calc(100vw-2rem)] sm:max-w-md lg:max-w-lg bg-base-100 rounded-xl sm:rounded-2xl shadow-strong p-0 overflow-hidden animate-slide-up border border-base-300/20">
+    <!-- Header -->
+    <div class="px-5 py-4 sm:px-6 sm:py-5 flex items-center justify-between border-b border-base-300/30" [ngClass]="getModalHeaderClass()">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg" [ngClass]="getIconBgClass()">
+          <span class="text-3xl">{{ getTypeIcon() }}</span>
+        </div>
+        <div>
+          <span class="badge badge-sm font-bold uppercase tracking-wide" [ngClass]="getSeverityBadgeClass()">
+            {{ alert.severity }} Alert
+          </span>
+          <h3 class="font-bold text-base sm:text-lg text-base-content mt-1">{{ alert.title }}</h3>
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-sm btn-circle hover:bg-base-200" (click)="closeModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="p-5 sm:p-6 lg:p-7 space-y-5">
+      <!-- Alert Type and Time -->
+      <div class="flex flex-wrap items-center gap-3 text-sm">
+        <div class="flex items-center gap-2 px-3 py-2 bg-base-200/50 rounded-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-base-content/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+          </svg>
+          <span class="font-medium text-base-content/80">{{ alert.type | titlecase }}</span>
+        </div>
+        <div class="flex items-center gap-2 px-3 py-2 bg-base-200/50 rounded-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-base-content/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="font-medium text-base-content/80">{{ alert.timestamp | date:'medium' }}</span>
+        </div>
+      </div>
+
+      <!-- Alert Message -->
+      <div>
+        <h4 class="text-xs font-bold text-base-content/60 uppercase tracking-wider mb-3">Alert Details</h4>
+        <div class="bg-base-200/30 rounded-xl p-4 border border-base-300/20">
+          <p class="text-sm text-base-content leading-relaxed">{{ alert.message }}</p>
+        </div>
+      </div>
+
+      <!-- Safety Guidelines -->
+      <div>
+        <h4 class="text-xs font-bold text-base-content/60 uppercase tracking-wider mb-3">Safety Guidelines</h4>
+        <div class="space-y-2">
+          <div class="flex items-start gap-3 p-3 bg-base-200/30 rounded-lg border border-base-300/20">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-info flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div class="flex-1">
+              <p class="text-sm text-base-content leading-relaxed">Stay informed through official weather channels and local authorities.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-3 bg-base-200/30 rounded-lg border border-base-300/20">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-warning flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div class="flex-1">
+              <p class="text-sm text-base-content leading-relaxed">Prepare emergency supplies and evacuation plans if necessary.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-3 bg-base-200/30 rounded-lg border border-base-300/20">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div class="flex-1">
+              <p class="text-sm text-base-content leading-relaxed">Follow instructions from emergency services and evacuation orders.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="px-5 py-4 sm:px-6 sm:py-5 bg-gradient-to-t from-base-200/50 to-base-100 border-t border-base-300/30 flex justify-end">
+      <button 
+        type="button" 
+        class="btn rounded-xl" 
+        [ngClass]="getButtonClass()"
+        (click)="closeModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="font-semibold">Acknowledged</span>
+      </button>
+    </div>
   </div>
 </div>

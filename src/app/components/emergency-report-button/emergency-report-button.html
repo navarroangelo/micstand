@@ -1,14 +1,14 @@
 <div class="relative">
   <!-- Quick Action Button -->
   <button
-    class="group relative w-14 h-14 sm:w-16 sm:h-16 lg:w-auto lg:h-auto lg:px-6 lg:py-3.5 bg-gradient-red rounded-2xl shadow-strong hover-lift flex items-center justify-center lg:gap-2.5 transition-smooth"
+    class="group relative w-12 h-12 sm:w-auto sm:h-14 lg:h-16 sm:px-4 lg:px-6 bg-gradient-red rounded-xl sm:rounded-2xl shadow-strong hover-lift flex items-center justify-center sm:gap-2 lg:gap-3 transition-smooth"
     (click)="openModal()"
     title="Report Emergency">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6 sm:w-7 sm:h-7 lg:w-5 lg:h-5 text-white">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-white">
       <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
     </svg>
-    <span class="hidden lg:inline text-white font-semibold text-sm whitespace-nowrap">Add a Report</span>
-    <div class="absolute inset-0 rounded-2xl bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
+    <span class="hidden sm:inline text-white font-bold text-sm lg:text-base whitespace-nowrap">Report Emergency</span>
+    <div class="absolute inset-0 rounded-xl sm:rounded-2xl bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
   </button>
 
   <!-- Emergency Report Modal -->
@@ -37,64 +37,102 @@
 
       <!-- Content -->
       <form [formGroup]="form" (submit)="submitReport()">
-      <div class="p-4 sm:p-6">
-        <p class="text-sm text-base-content/70 mb-4">Select the type of emergency you want to report. Your location will be automatically captured.</p>
+      <div class="p-5 sm:p-7 space-y-6">
+        <!-- Instructions -->
+        <div class="flex items-start gap-3 p-4 bg-gradient-to-br from-error/5 to-warning/5 rounded-xl border border-error/10">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-error flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p class="text-sm text-base-content/80 leading-relaxed">Select the type of emergency below. Your location will be automatically captured when you submit.</p>
+        </div>
 
         <!-- Emergency Type Selection -->
-        <div class="space-y-2">
-          <button
-            type="button"
-            *ngFor="let type of emergencyTypes"
-            class="group w-full px-4 py-3 sm:py-4 rounded-xl hover:bg-base-200 transition-smooth flex items-center gap-3 text-left border-2 border-base-300/20 hover:border-error/40"
-            [class.bg-error/5]="selectedType === type.id"
-            [class.border-error]="selectedType === type.id"
-            (click)="selectType(type.id)">
-            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-error/10 flex items-center justify-center flex-shrink-0 group-hover:bg-error/20 transition-colors">
-              <span class="text-2xl sm:text-3xl">{{ type.icon }}</span>
-            </div>
-            <div class="flex-1">
-              <div class="font-bold text-sm sm:text-base text-base-content">{{ type.label }}</div>
-              <div class="text-xs text-base-content/60">{{ type.description }}</div>
-            </div>
-            <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all"
-                 [class.border-error]="selectedType === type.id"
-                 [class.bg-error]="selectedType === type.id"
-                 [class.border-base-300]="selectedType !== type.id">
-              <svg *ngIf="selectedType === type.id" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-white" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-              </svg>
-            </div>
-          </button>
-          <input type="hidden" formControlName="emergencyType" [value]="selectedType" />
+        <div>
+          <h4 class="text-xs font-bold text-base-content/60 uppercase tracking-wider mb-3">Emergency Type</h4>
+          <div class="space-y-3">
+            <button
+              type="button"
+              *ngFor="let type of emergencyTypes"
+              class="group relative w-full px-4 py-4 rounded-xl transition-all duration-200 flex items-center gap-4 text-left border-2 overflow-hidden"
+              [class.bg-gradient-to-r]="selectedType === type.id"
+              [class.from-error/10]="selectedType === type.id"
+              [class.to-warning/10]="selectedType === type.id"
+              [class.border-error]="selectedType === type.id"
+              [class.shadow-lg]="selectedType === type.id"
+              [class.shadow-error/20]="selectedType === type.id"
+              [class.bg-base-100]="selectedType !== type.id"
+              [class.border-base-300/30]="selectedType !== type.id"
+              [class.hover:border-error/40]="selectedType !== type.id"
+              [class.hover:bg-base-200/50]="selectedType !== type.id"
+              (click)="selectType(type.id)">
+              
+              <!-- Icon -->
+              <div class="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-200"
+                   [class.bg-error/15]="selectedType === type.id"
+                   [class.bg-base-200]="selectedType !== type.id"
+                   [class.shadow-inner]="selectedType === type.id">
+                <span class="text-3xl">{{ type.icon }}</span>
+              </div>
+              
+              <!-- Text -->
+              <div class="flex-1 min-w-0">
+                <div class="font-bold text-base text-base-content mb-1">{{ type.label }}</div>
+                <div class="text-xs text-base-content/60 leading-relaxed">{{ type.description }}</div>
+              </div>
+              
+              <!-- Checkmark -->
+              <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200"
+                   [class.bg-error]="selectedType === type.id"
+                   [class.scale-100]="selectedType === type.id"
+                   [class.bg-base-300/20]="selectedType !== type.id"
+                   [class.scale-90]="selectedType !== type.id">
+                <svg *ngIf="selectedType === type.id" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              
+              <!-- Selected indicator bar -->
+              <div *ngIf="selectedType === type.id" class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-error to-warning"></div>
+            </button>
+            <input type="hidden" formControlName="emergencyType" [value]="selectedType" />
+          </div>
         </div>
 
         <!-- Additional Details -->
-        <div class="mt-4 space-y-3">
-          <div>
-            <label class="label">
-              <span class="label-text font-semibold text-sm">Additional Details (Optional)</span>
-            </label>
+        <div>
+          <label class="block mb-3">
+            <span class="text-xs font-bold text-base-content/60 uppercase tracking-wider">Additional Details <span class="text-base-content/40 normal-case">(Optional)</span></span>
+          </label>
+          <div class="relative">
             <textarea
               formControlName="additionalDetails"
               [(ngModel)]="additionalDetails"
-              class="textarea textarea-bordered w-full h-24 text-sm rounded-xl bg-base-200/50 border-base-300/40 focus:border-error/60"
+              class="w-full h-28 px-4 py-3 text-sm rounded-xl bg-base-100 border-2 border-base-300/40 focus:border-error/60 focus:outline-none focus:ring-4 focus:ring-error/10 transition-all resize-none placeholder:text-base-content/40"
               placeholder="Describe the situation, number of people affected, immediate needs, etc."></textarea>
+            <div class="absolute bottom-3 right-3 text-xs text-base-content/30 pointer-events-none">
+              {{ additionalDetails?.length || 0 }} characters
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Footer -->
-      <div class="px-4 py-3 sm:px-6 sm:py-4 bg-base-200/30 border-t border-base-300/20 flex flex-col sm:flex-row gap-2 sm:gap-3 justify-end">
-        <button class="btn btn-ghost btn-sm sm:btn-md rounded-lg order-2 sm:order-1" (click)="closeModal()">Cancel</button>
+      <div class="px-5 py-4 sm:px-7 sm:py-5 bg-gradient-to-t from-base-200/50 to-base-100 border-t border-base-300/30 flex flex-col-reverse sm:flex-row gap-3 justify-end">
+        <button type="button" class="btn btn-ghost rounded-xl hover:bg-base-200 transition-colors" (click)="closeModal()">
+          Cancel
+        </button>
         <button
           type="submit"
-          class="btn btn-error btn-sm sm:btn-md rounded-lg shadow-soft order-1 sm:order-2 text-white"
+          class="btn rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border-0"
+          [class.btn-error]="selectedType"
+          [class.btn-disabled]="!selectedType"
+          [class.opacity-50]="!selectedType"
           [disabled]="!selectedType"
         > 
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
           </svg>
-          <span class="text-xs sm:text-sm">Submit Report</span>
+          <span class="font-semibold">Submit Report</span>
         </button>
       </div>
       </form>

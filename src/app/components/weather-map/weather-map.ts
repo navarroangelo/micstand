@@ -13,11 +13,22 @@ import * as L from 'leaflet';
 export class WeatherMap implements OnInit, AfterViewInit, OnDestroy {
   private map?: L.Map;
   private markers: L.Marker[] = [];
+  isAlertsExpanded = false;
+  isCentersOpen = false;
 
   evacuationCenters = [
     { id: 1, name: 'Balibago Evacuation Center', lat: 15.1663, lng: 120.5901, capacity: 500, status: 'available' },
     { id: 2, name: 'Malabañas Evacuation Center', lat: 15.1509, lng: 120.5898, capacity: 300, status: 'limited' },
     { id: 3, name: 'Pandan Evacuation Center', lat: 15.1522, lng: 120.6054, capacity: 800, status: 'available' },
+    { id: 4, name: 'Cutud Community Center', lat: 15.1400, lng: 120.5950, capacity: 450, status: 'available' },
+    { id: 5, name: 'Anunas Elementary School', lat: 15.1700, lng: 120.5850, capacity: 600, status: 'available' },
+    { id: 6, name: 'Sapangbato Evacuation Site', lat: 15.1800, lng: 120.6000, capacity: 350, status: 'limited' },
+    { id: 7, name: 'Pulung Maragul Gymnasium', lat: 15.1450, lng: 120.6100, capacity: 700, status: 'available' },
+    { id: 8, name: 'Santo Rosario Community Hall', lat: 15.1550, lng: 120.5800, capacity: 400, status: 'available' },
+    { id: 9, name: 'Margot Covered Court', lat: 15.1600, lng: 120.6150, capacity: 500, status: 'limited' },
+    { id: 10, name: 'Claro M. Recto High School', lat: 15.1350, lng: 120.5850, capacity: 900, status: 'available' },
+    { id: 11, name: 'Salapungan Barangay Hall', lat: 15.1650, lng: 120.6050, capacity: 250, status: 'available' },
+    { id: 12, name: 'Lourdes Sur Evacuation Center', lat: 15.1480, lng: 120.5920, capacity: 550, status: 'available' },
   ];
 
   weatherAlerts = [
@@ -25,16 +36,16 @@ export class WeatherMap implements OnInit, AfterViewInit, OnDestroy {
       id: 1,
       type: 'typhoon',
       severity: 'high',
-      title: 'Typhoon Pepito',
-      message: 'Typhoon Pepito approaching. Secure loose items, charge devices, prepare 3-day emergency kit.',
+      title: 'Typhoon Uwan',
+      message: 'Typhoon Uwan is expected to hit Angeles City. Signal #3 has been raised. Strong winds and heavy rainfall expected. Secure loose items, charge devices, and prepare a 3-day emergency kit.',
       timestamp: new Date()
     },
     {
       id: 2,
-      type: 'storm-surge',
-      severity: 'medium',
-      title: 'Storm Surge',
-      message: 'Coastal areas at risk. Move to higher ground immediately for safety and follow evacuation orders.',
+      type: 'flood',
+      severity: 'high',
+      title: 'Flooding Alert',
+      message: 'Flooding alert for Angeles City due to Typhoon Uwan. Low-lying areas are at high risk. Residents are advised to move to higher ground and prepare for possible evacuation.',
       timestamp: new Date()
     }
   ];
@@ -75,7 +86,7 @@ export class WeatherMap implements OnInit, AfterViewInit, OnDestroy {
       zoom: 13,
       zoomControl: false,
       preferCanvas: false,
-      attributionControl: true,
+      attributionControl: false,
       scrollWheelZoom: true,
       doubleClickZoom: true,
       boxZoom: true,
@@ -88,7 +99,7 @@ export class WeatherMap implements OnInit, AfterViewInit, OnDestroy {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       minZoom: 3,
-      attribution: '© OpenStreetMap contributors',
+      attribution: '',
       tileSize: 256,
       updateWhenIdle: false,
       updateWhenZooming: false,
@@ -133,5 +144,17 @@ export class WeatherMap implements OnInit, AfterViewInit, OnDestroy {
 
       this.markers.push(marker);
     });
+  }
+
+  toggleAlerts(): void {
+    this.isAlertsExpanded = !this.isAlertsExpanded;
+  }
+
+  getEvacuationCenterCountByStatus(status: string): number {
+    return this.evacuationCenters.filter(c => c.status === status).length;
+  }
+
+  toggleCenters(): void {
+    this.isCentersOpen = !this.isCentersOpen;
   }
 }

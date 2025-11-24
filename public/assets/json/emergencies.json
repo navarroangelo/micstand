@@ -25,5 +25,113 @@
     "lng": 120.6054,
     "severity": "low",
     "timestamp": ""
+  },
+  {
+    "id": 4,
+    "type": "flood",
+    "location": "Cutud",
+    "lat": 15.1420,
+    "lng": 120.5970,
+    "severity": "high",
+    "timestamp": ""
+  },
+  {
+    "id": 5,
+    "type": "fire",
+    "location": "Anunas",
+    "lat": 15.1720,
+    "lng": 120.5830,
+    "severity": "medium",
+    "timestamp": ""
+  },
+  {
+    "id": 6,
+    "type": "flood",
+    "location": "Sapangbato",
+    "lat": 15.1780,
+    "lng": 120.6020,
+    "severity": "high",
+    "timestamp": ""
+  },
+  {
+    "id": 7,
+    "type": "earthquake",
+    "location": "Pulung Maragul",
+    "lat": 15.1470,
+    "lng": 120.6120,
+    "severity": "medium",
+    "timestamp": ""
+  },
+  {
+    "id": 8,
+    "type": "fire",
+    "location": "Santo Rosario",
+    "lat": 15.1530,
+    "lng": 120.5780,
+    "severity": "high",
+    "timestamp": ""
+  },
+  {
+    "id": 9,
+    "type": "flood",
+    "location": "Margot",
+    "lat": 15.1580,
+    "lng": 120.6170,
+    "severity": "medium",
+    "timestamp": ""
+  },
+  {
+    "id": 10,
+    "type": "fire",
+    "location": "Pulung Cacutud",
+    "lat": 15.1380,
+    "lng": 120.5870,
+    "severity": "low",
+    "timestamp": ""
+  },
+  {
+    "id": 11,
+    "type": "earthquake",
+    "location": "Salapungan",
+    "lat": 15.1630,
+    "lng": 120.6030,
+    "severity": "low",
+    "timestamp": ""
+  },
+  {
+    "id": 12,
+    "type": "flood",
+    "location": "Lourdes Sur",
+    "lat": 15.1500,
+    "lng": 120.5940,
+    "severity": "high",
+    "timestamp": ""
+  },
+  {
+    "id": 13,
+    "type": "fire",
+    "location": "Malabanias",
+    "lat": 15.1750,
+    "lng": 120.5900,
+    "severity": "medium",
+    "timestamp": ""
+  },
+  {
+    "id": 14,
+    "type": "flood",
+    "location": "Pulungbulu",
+    "lat": 15.1440,
+    "lng": 120.6080,
+    "severity": "medium",
+    "timestamp": ""
+  },
+  {
+    "id": 15,
+    "type": "earthquake",
+    "location": "Agapito del Rosario",
+    "lat": 15.1340,
+    "lng": 120.5910,
+    "severity": "high",
+    "timestamp": ""
   }
 ]

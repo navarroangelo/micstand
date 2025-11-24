@@ -18,6 +18,15 @@ interface WeatherAlert {
 })
 export class WeatherAlertCard {
   @Input() alert!: WeatherAlert;
+  isModalOpen = false;
+
+  openModal() {
+    this.isModalOpen = true;
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
+  }
 
   getSeverityClass() {
     switch (this.alert.severity) {
@@ -53,6 +62,33 @@ export class WeatherAlertCard {
       case 'wind': return '💨';
       case 'flood': return '🌧️';
       default: return '⚠️';
+    }
+  }
+
+  getModalHeaderClass() {
+    switch (this.alert.severity) {
+      case 'high': return 'bg-red-50/50';
+      case 'medium': return 'bg-orange-50/50';
+      case 'low': return 'bg-blue-50/50';
+      default: return 'bg-blue-50/50';
+    }
+  }
+
+  getButtonClass() {
+    switch (this.alert.severity) {
+      case 'high': return 'btn-error text-white';
+      case 'medium': return 'btn-warning text-white';
+      case 'low': return 'btn-info text-white';
+      default: return 'btn-info text-white';
+    }
+  }
+
+  getAccentClass() {
+    switch (this.alert.severity) {
+      case 'high': return 'bg-red-500';
+      case 'medium': return 'bg-orange-500';
+      case 'low': return 'bg-blue-500';
+      default: return 'bg-blue-500';
     }
   }
 }

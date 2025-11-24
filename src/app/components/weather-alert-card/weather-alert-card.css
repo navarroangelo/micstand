@@ -6,12 +6,14 @@
 }
 
 /* Hover state - expand the card */
-.alert-card:hover {
+.alert-card:hover,
+.alert-card.expanded {
   height: 14rem; /* 224px / h-56 */
 }
 
 /* Show expandable content on hover */
-.alert-card:hover .expandable-content {
+.alert-card:hover .expandable-content,
+.alert-card.expanded .expandable-content {
   opacity: 1;
   max-height: 500px;
 }

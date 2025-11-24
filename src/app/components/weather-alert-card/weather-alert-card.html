@@ -1,6 +1,9 @@
-<div class="alert-card p-2.5 sm:p-3 lg:p-4 animate-slide-up shadow-xl hover:shadow-2xl transition-all duration-500 ease-in-out flex flex-col w-36 sm:w-48 lg:w-52 rounded-lg sm:rounded-xl flex-shrink-0 overflow-hidden" [ngClass]="getSeverityClass()">
+<div
+  class="alert-card p-2.5 sm:p-3 lg:p-4 animate-slide-up shadow-xl hover:shadow-2xl transition-all duration-500 ease-in-out flex flex-col w-36 sm:w-48 lg:w-52 rounded-lg sm:rounded-xl flex-shrink-0 overflow-hidden"
+  [ngClass]="[getSeverityClass(), isExpanded ? 'expanded' : '']"
+  (click)="toggleExpand()">
   <!-- Header Section - Always Visible -->
-  <div class="flex items-center gap-2 mb-1.5 sm:mb-2 lg:mb-3">
+  <div class="flex items-center gap-2 mb-1.5 sm:mb-2 lg:mb-3 pointer-events-none">
     <!-- Icon -->
     <div class="w-8 h-8 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full flex items-center justify-center shadow-lg flex-shrink-0" [ngClass]="getIconBgClass()">
       <span class="text-base sm:text-lg lg:text-xl">{{ getTypeIcon() }}</span>
@@ -15,7 +18,7 @@
     </div>
   </div>
 
-  <!-- Expandable Content Section - Hidden by default, shown on hover -->
+  <!-- Expandable Content Section - Hidden by default, shown on hover/click -->
   <div class="expandable-content opacity-0 max-h-0 transition-all duration-500 ease-in-out flex-1 flex flex-col text-center overflow-hidden">
     <p class="text-[9px] sm:text-xs text-gray-600 line-clamp-3 sm:line-clamp-4 leading-relaxed mb-2">{{ alert.message }}</p>
 

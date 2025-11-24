@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Component, Output, EventEmitter, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -7,9 +7,17 @@ import { CommonModule } from '@angular/common';
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
-export class Navbar {
+export class Navbar implements OnInit {
   @Input() activeView: 'weather' | 'emergencies' = 'weather';
   @Output() viewChange = new EventEmitter<'weather' | 'emergencies'>();
+
+  windowWidth: number = window.innerWidth;
+
+  ngOnInit() {
+    window.addEventListener('resize', () => {
+      this.windowWidth = window.innerWidth;
+    });
+  }
 
   setActiveView(view: 'weather' | 'emergencies') {
     this.activeView = view;

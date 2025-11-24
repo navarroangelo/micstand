@@ -36,12 +36,14 @@
       </div>
 
       <!-- Content -->
+      <form [formGroup]="form" (submit)="submitReport()">
       <div class="p-4 sm:p-6">
         <p class="text-sm text-base-content/70 mb-4">Select the type of emergency you want to report. Your location will be automatically captured.</p>
 
         <!-- Emergency Type Selection -->
         <div class="space-y-2">
           <button
+            type="button"
             *ngFor="let type of emergencyTypes"
             class="group w-full px-4 py-3 sm:py-4 rounded-xl hover:bg-base-200 transition-smooth flex items-center gap-3 text-left border-2 border-base-300/20 hover:border-error/40"
             [class.bg-error/5]="selectedType === type.id"
@@ -63,6 +65,7 @@
               </svg>
             </div>
           </button>
+          <input type="text" formControlName="emergencyType" [value]="selectedType" />
         </div>
 
         <!-- Additional Details -->
@@ -72,6 +75,7 @@
               <span class="label-text font-semibold text-sm">Additional Details (Optional)</span>
             </label>
             <textarea
+              formControlName="additionalDetails"
               [(ngModel)]="additionalDetails"
               class="textarea textarea-bordered w-full h-24 text-sm rounded-xl bg-base-200/50 border-base-300/40 focus:border-error/60"
               placeholder="Describe the situation, number of people affected, immediate needs, etc."></textarea>
@@ -83,15 +87,17 @@
       <div class="px-4 py-3 sm:px-6 sm:py-4 bg-base-200/30 border-t border-base-300/20 flex flex-col sm:flex-row gap-2 sm:gap-3 justify-end">
         <button class="btn btn-ghost btn-sm sm:btn-md rounded-lg order-2 sm:order-1" (click)="closeModal()">Cancel</button>
         <button
+          type="submit"
           class="btn btn-error btn-sm sm:btn-md rounded-lg shadow-soft order-1 sm:order-2 text-white"
           [disabled]="!selectedType"
-          (click)="submitReport()">
+        > 
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
           </svg>
           <span class="text-xs sm:text-sm">Submit Report</span>
         </button>
       </div>
+      </form>
     </div>
   </div>
 </div>

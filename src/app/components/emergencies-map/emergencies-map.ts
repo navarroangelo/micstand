@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { EmergencyReportButton } from '../emergency-report-button/emergency-report-button';
 import { AiChatbotButton } from '../ai-chatbot-button/ai-chatbot-button';
 import * as L from 'leaflet';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-emergencies-map',
@@ -20,13 +21,14 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
     { id: 'earthquake', label: 'Earthquake', icon: '🏚️', active: true },
   ];
 
-  emergencies = [
-    { id: 1, type: 'fire', location: 'Balibago', lat: 15.1663, lng: 120.5901, severity: 'high', timestamp: new Date() },
-    { id: 2, type: 'flood', location: 'Malabañas', lat: 15.1509, lng: 120.5898, severity: 'medium', timestamp: new Date() },
-    { id: 3, type: 'earthquake', location: 'Pandan', lat: 15.1522, lng: 120.6054, severity: 'low', timestamp: new Date() },
-  ];
+  constructor(private http: HttpClient) {}
+
+  //get emergencies from JSON file
+  // public/assets/json/emergencies.json
+  emergencies: any[] = [];
 
   ngOnInit(): void {
+    this.getEmergencies();
     // Fix for default marker icon issue with webpack
     const iconRetinaUrl = 'assets/marker-icon-2x.png';
     const iconUrl = 'assets/marker-icon.png';
@@ -42,6 +44,15 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
       shadowSize: [41, 41]
     });
     L.Marker.prototype.options.icon = iconDefault;
+  }
+
+  private getEmergencies() {
+    this.http.get<any[]>('assets/json/emergencies.json').subscribe((data: any) => {
+      //save to localstorage
+      // localStorage.setItem('emergencies', JSON.stringify(data));
+      this.emergencies = localStorage.getItem('emergencies') ? JSON.parse(localStorage.getItem('emergencies')!) : data;
+      this.updateMarkers();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -99,7 +110,7 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
     const mediumSeverityColor = '#f59e0b'; // Bright amber orange
     const lowSeverityColor = '#3b82f6';    // Vivid blue
 
-    this.getFilteredEmergencies().forEach(emergency => {
+    this.getFilteredEmergencies().forEach((emergency: any) => {
       const severityColor = emergency.severity === 'high' ? highSeverityColor :
                            emergency.severity === 'medium' ? mediumSeverityColor : lowSeverityColor;
       const icon = this.getEmergencyIcon(emergency.type);

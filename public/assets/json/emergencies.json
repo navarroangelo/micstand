@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "type": "fire",
+    "location": "Balibago",
+    "lat": 15.1663,
+    "lng": 120.5901,
+    "severity": "high",
+    "timestamp": ""
+  },
+  {
+    "id": 2,
+    "type": "flood",
+    "location": "Malabañas",
+    "lat": 15.1509,
+    "lng": 120.5898,
+    "severity": "medium",
+    "timestamp": ""
+  },
+  {
+    "id": 3,
+    "type": "earthquake",
+    "location": "Pandan",
+    "lat": 15.1522,
+    "lng": 120.6054,
+    "severity": "low",
+    "timestamp": ""
+  }
+]

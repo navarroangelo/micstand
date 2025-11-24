@@ -15,8 +15,14 @@
   <div
     *ngIf="isChatOpen"
     class="absolute bottom-14 right-0 sm:bottom-16 lg:bottom-20 bg-base-100 rounded-xl sm:rounded-2xl shadow-strong w-[calc(100vw-2rem)] max-w-sm sm:w-80 lg:w-96 h-[400px] sm:h-[450px] lg:h-[500px] flex flex-col border border-base-300/20 animate-slide-up overflow-hidden">
+    <iframe
+      src="https://dify-hackaton.cloudstaff.io/chatbot/55amiqBDlG67Mv4C"
+      style="width: 100%; height: 100%;"
+      frameborder="0"
+      allow="microphone">
+    </iframe>
     <!-- Chat Header -->
-    <div class="bg-gradient-navy px-6 py-4 flex items-center justify-between">
+    <!-- <div class="bg-gradient-navy px-6 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-white">
@@ -34,12 +40,11 @@
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
-    </div>
+    </div> -->
 
     <!-- Chat Messages -->
-    <div class="flex-1 p-6 overflow-y-auto bg-base-200/30 custom-scrollbar">
+    <!-- <div class="flex-1 p-6 overflow-y-auto bg-base-200/30 custom-scrollbar">
       <div class="space-y-4">
-        <!-- AI Message -->
         <div class="flex items-start gap-3">
           <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-primary">
@@ -74,22 +79,25 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- Chat Input -->
-    <div class="p-4 bg-base-100 border-t border-base-300/20">
+    <!-- <div class="p-4 bg-base-100 border-t border-base-300/20">
       <div class="flex gap-2">
+        <form (submit)="onSubmit($event)" [formGroup]="form">
         <input
+          formControlName="userInput"
           type="text"
           placeholder="Ask me anything..."
           class="input input-bordered flex-1 rounded-xl bg-base-200/50 border-base-300/40 focus:border-primary/60 text-sm" />
-        <button class="btn btn-primary rounded-xl px-4 shadow-soft">
+        <button type="submit" class="btn btn-primary rounded-xl px-4 shadow-soft">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
             <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
           </svg>
         </button>
+        </form>
       </div>
       <p class="text-xs text-base-content/50 mt-2">Powered by AI • Responses may vary</p>
-    </div>
+    </div> -->
   </div>
 </div>

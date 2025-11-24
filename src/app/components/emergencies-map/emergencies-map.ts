@@ -4,6 +4,7 @@ import { EmergencyReportButton } from '../emergency-report-button/emergency-repo
 import { AiChatbotButton } from '../ai-chatbot-button/ai-chatbot-button';
 import * as L from 'leaflet';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-emergencies-map',
@@ -46,11 +47,22 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
     L.Marker.prototype.options.icon = iconDefault;
   }
 
+  onReportSubmitted() {
+    this.getEmergencies();
+  }
+
   private getEmergencies() {
-    this.http.get<any[]>('assets/json/emergencies.json').subscribe((data: any) => {
-      //save to localstorage
-      // localStorage.setItem('emergencies', JSON.stringify(data));
-      this.emergencies = localStorage.getItem('emergencies') ? JSON.parse(localStorage.getItem('emergencies')!) : data;
+    this.http.get<any[]>('https://api.jsonbin.io/v3/b/692432b0d0ea881f40fcb70a', {
+      headers: {
+        'X-Master-Key': environment.jsonBinApiKey
+      }
+    }).subscribe((data: any) => {
+      if (Array.isArray(data.record)) {
+        this.emergencies = data.record;
+      } else {
+        this.emergencies = [];
+      }
+      console.log('Fetched emergencies:', this.emergencies);
       this.updateMarkers();
     });
   }

@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-emergency-report-button',
@@ -10,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './emergency-report-button.css',
 })
 export class EmergencyReportButton implements OnInit {
+  @Output() reportSubmitted = new EventEmitter<void>();
   isModalOpen = false;
   selectedType: string | null = null;
   additionalDetails = '';
@@ -18,6 +20,7 @@ export class EmergencyReportButton implements OnInit {
   latitude: number | null = null;
   longitude: number | null = null;
   locationError: string | null = null;
+  userAdrress: string | null = null;
 
   emergencyTypes = [
     {
@@ -53,6 +56,7 @@ export class EmergencyReportButton implements OnInit {
       (position) => {
         this.form.get('userLocation')?.setValue({ latitude: position.coords.latitude, longitude: position.coords.longitude });
         console.log('Geolocation permission granted:', position);
+        this.userAdrress = this.getAddress(position.coords.latitude, position.coords.longitude);
       },
       (error) => {
         console.error('Geolocation permission denied or error:', error);
@@ -68,7 +72,6 @@ export class EmergencyReportButton implements OnInit {
           this.latitude = position.coords.latitude;
           this.longitude = position.coords.longitude;
           this.locationError = null; // Clear any previous errors
-          console.log('Latitude:', this.latitude, 'Longitude:', this.longitude);
         },
         (error: GeolocationPositionError) => {
           switch (error.code) {
@@ -140,9 +143,12 @@ export class EmergencyReportButton implements OnInit {
     });
 
     let oldData: any;
-    this.http.get('assets/json/emergencies.json').subscribe((data: any) => {
-      oldData = data;
-      console.log('Old Data:', oldData);
+    this.http.get('https://api.jsonbin.io/v3/b/692432b0d0ea881f40fcb70a', {
+      headers: {
+        'X-Master-Key': environment.jsonBinApiKey
+      }
+    }).subscribe((data: any) => {
+      oldData = data.record;
       if(oldData !== null) {
         const newReport = {
           id: oldData.length + 1, // Random ID for demo purposes
@@ -156,21 +162,48 @@ export class EmergencyReportButton implements OnInit {
         };
         oldData.push(newReport);
         // Update local storage
-        localStorage.setItem('emergencies', JSON.stringify(oldData));
-        console.log('Updated Data:', oldData);
+        this.http.put('https://api.jsonbin.io/v3/b/692432b0d0ea881f40fcb70a', oldData, {
+          headers: {
+            'X-Master-Key': environment.jsonBinApiKey,
+            'Content-Type': 'application/json'
+          }
+        }).subscribe((response) => {
+          //re init emergencies-map after successful report submission
+          console.log('Data successfully updated:', response);
+          this.reportSubmitted.emit();
+          const body = {
+              address: this.userAdrress,
+              type: this.selectedType
+          };
+          this.sendDisasterNotification(body);
+          this.closeModal();
+        });
       }
     });
-    
+  }
 
+  sendDisasterNotification(body: any) {
+    this.http.post('https://hackathon-flow.stage.cloud.cloudstaff.com/webhook/9cec53fa-93b4-440d-abf9-1adc685a122a/disaster-warning', body).subscribe((response) => {
+      console.log('Disaster notification sent successfully:', response);
+    }, (error) => {
+      console.error('Error sending disaster notification:', error);
+    });
+  }
 
-    // TODO: Send data to backend/n8n webhook
-    // TODO: Get actual GPS location
-    // TODO: Show success notification
-
-    // Close modal and reset
-    // this.closeModal();
-
-    // Show success message (you can implement a toast notification here)
-    // alert(`${selectedEmergency?.label} emergency reported successfully! Authorities have been notified.`);
+  getAddress(lat: number | null, lng: number | null): any {
+    if (lat === null || lng === null) {
+      return null;
+    }
+    this.http.get<any>(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`).subscribe((response: any) => {
+      if (response && response.address) {
+        this.userAdrress = [response.address.road, response.address.suburb, response.address.city, response.address.state, response.address.country].filter(Boolean).join(', ');
+        console.log('Fetched address:', this.userAdrress);
+        return this.userAdrress;
+      }
+      return null;
+    }, error => {
+      console.error('Error fetching address:', error);
+      return null;  
+    });
   }
 }

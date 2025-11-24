@@ -70,7 +70,7 @@
 
   <!-- Emergency Report Button - Bottom Left -->
   <div class="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 lg:bottom-6 lg:left-6">
-    <app-emergency-report-button></app-emergency-report-button>
+    <app-emergency-report-button (reportSubmitted)="onReportSubmitted()"></app-emergency-report-button>
   </div>
 
   <!-- AI Chatbot Button - Bottom Right -->

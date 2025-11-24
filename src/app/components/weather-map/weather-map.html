@@ -1,25 +1,25 @@
-<div class="relative w-full h-screen bg-base-100">
+<div class="relative w-full h-full bg-base-100">
   <!-- Leaflet Map Container -->
   <div id="weatherMap" class="w-full h-full"></div>
 
-  <!-- Map Legend - Top Right -->
-  <div class="absolute top-3 right-3 sm:top-4 sm:right-4 lg:top-6 lg:right-6 bg-base-100 rounded-xl sm:rounded-2xl shadow-strong p-3 sm:p-4 border border-base-300/20 min-w-[160px] sm:min-w-[180px] lg:min-w-[200px]">
-    <h3 class="font-bold text-xs sm:text-sm text-base-content mb-2 sm:mb-3">Map Legend</h3>
-    <div class="space-y-2 sm:space-y-2.5 text-[10px] sm:text-xs">
-      <div class="flex items-center gap-2 sm:gap-3">
-        <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full flex-shrink-0" style="background-color: #10b981;"></div>
+  <!-- Map Legend - Top Right (Collapsible on mobile?) - Simplified for now: Top Right, smaller padding -->
+  <div class="absolute top-2 right-2 sm:top-4 sm:right-4 lg:top-6 lg:right-6 bg-base-100/90 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-strong p-2 sm:p-4 border border-base-300/20 min-w-[140px] sm:min-w-[180px] lg:min-w-[200px] z-[400]">
+    <h3 class="font-bold text-[10px] sm:text-sm text-base-content mb-1 sm:mb-3">Map Legend</h3>
+    <div class="space-y-1 sm:space-y-2.5 text-[9px] sm:text-xs">
+      <div class="flex items-center gap-1.5 sm:gap-3">
+        <div class="w-2 h-2 sm:w-3 sm:h-3 rounded-full flex-shrink-0" style="background-color: #10b981;"></div>
         <span class="text-base-content/70 leading-none">Available Centers</span>
       </div>
-      <div class="flex items-center gap-2 sm:gap-3">
-        <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full flex-shrink-0" style="background-color: #f59e0b;"></div>
+      <div class="flex items-center gap-1.5 sm:gap-3">
+        <div class="w-2 h-2 sm:w-3 sm:h-3 rounded-full flex-shrink-0" style="background-color: #f59e0b;"></div>
         <span class="text-base-content/70 leading-none">Limited Capacity</span>
       </div>
     </div>
   </div>
 
-  <!-- Weather Alerts - Bottom Left -->
-  <div class="absolute bottom-3 left-3 right-[60px] sm:bottom-4 sm:left-4 sm:right-20 lg:bottom-6 lg:left-6 lg:right-24 overflow-x-auto overflow-y-hidden custom-scrollbar">
-    <div class="flex gap-2 sm:gap-3 lg:gap-4 pb-2 h-full">
+  <!-- Weather Alerts - Bottom Left (Adjusted for bottom nav) -->
+  <div class="absolute bottom-4 left-2 right-2 sm:bottom-4 sm:left-4 sm:right-20 lg:bottom-6 lg:left-6 lg:right-24 overflow-x-auto overflow-y-hidden custom-scrollbar z-[400]">
+    <div class="flex gap-2 sm:gap-3 lg:gap-4 pb-2 h-full items-end">
       <app-weather-alert-card
         *ngFor="let alert of weatherAlerts"
         [alert]="alert">
@@ -27,8 +27,8 @@
     </div>
   </div>
 
-  <!-- AI Chatbot Button - Bottom Right -->
-  <div class="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 lg:bottom-6 lg:right-6">
+  <!-- AI Chatbot Button - Bottom Right (Adjusted for bottom nav on mobile) -->
+  <div class="absolute bottom-4 right-2 sm:bottom-4 sm:right-4 lg:bottom-6 lg:right-6 z-[400]">
     <app-ai-chatbot-button></app-ai-chatbot-button>
   </div>
 </div>

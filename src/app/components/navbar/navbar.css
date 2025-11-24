@@ -1,0 +1,14 @@
+@keyframes lighthouse-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 5px rgba(255, 255, 200, 0.4)) drop-shadow(0 0 10px rgba(255, 255, 200, 0.2));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(255, 255, 200, 0.8)) drop-shadow(0 0 30px rgba(255, 255, 200, 0.4));
+    transform: scale(1.05);
+  }
+}
+
+.lighthouse-glow {
+  animation: lighthouse-glow 3s ease-in-out infinite;
+}

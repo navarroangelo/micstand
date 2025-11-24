@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EmergencyReportButton } from '../emergency-report-button/emergency-report-button';
 import { AiChatbotButton } from '../ai-chatbot-button/ai-chatbot-button';
@@ -14,6 +14,10 @@ import { HttpClient } from '@angular/common/http';
 export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
   private map?: L.Map;
   private markers: L.Marker[] = [];
+
+  isFiltersExpanded = false;
+
+  constructor(private elementRef: ElementRef) {}
 
   emergencyTypes = [
     { id: 'fire', label: 'Fire', icon: '🔥', active: true },
@@ -173,5 +177,20 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
 
   getEmergencyCountBySeverity(severity: string): number {
     return this.emergencies.filter(e => e.severity === severity).length;
+  }
+
+  toggleFiltersExpanded(event: Event) {
+    event.stopPropagation();
+    this.isFiltersExpanded = !this.isFiltersExpanded;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (this.isFiltersExpanded) {
+      const clickedInside = this.elementRef.nativeElement.contains(event.target);
+      if (!clickedInside) {
+        this.isFiltersExpanded = false;
+      }
+    }
   }
 }

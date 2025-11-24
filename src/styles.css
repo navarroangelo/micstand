@@ -39,13 +39,20 @@
   /* Global resets and styles */
   * {
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
   }
 
   html {
-    font-size: 16px;
+    font-size: 14px; /* Smaller base font for mobile */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+  }
+
+  @media (min-width: 640px) {
+    html {
+      font-size: 16px; /* Restore standard size on larger screens */
+    }
   }
 
   html, body {
@@ -53,7 +60,7 @@
     width: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow: hidden; /* Prevent scroll on body, handle in containers */
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background-color: var(--color-light-grey);
     color: var(--color-black);

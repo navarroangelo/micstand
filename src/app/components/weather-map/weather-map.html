@@ -19,7 +19,7 @@
 
   <!-- Weather Alerts - Bottom Left -->
   <div class="absolute bottom-3 left-3 right-[60px] sm:bottom-4 sm:left-4 sm:right-20 lg:bottom-6 lg:left-6 lg:right-24 overflow-x-auto overflow-y-hidden custom-scrollbar">
-    <div class="flex gap-2 sm:gap-3 lg:gap-4 pb-2 h-full">
+    <div class="flex gap-2 sm:gap-3 lg:gap-4 pb-2 h-full items-end">
       <app-weather-alert-card
         *ngFor="let alert of weatherAlerts"
         [alert]="alert">

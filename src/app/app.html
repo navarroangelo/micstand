@@ -35,14 +35,14 @@
 </div>
 
 <!-- Main App Content -->
-<div *ngIf="!isLoading" class="flex h-screen overflow-hidden animate-fade-in">
-  <!-- Side Navbar - Responsive width -->
-  <div class="w-20 sm:w-24 lg:w-28 flex-shrink-0">
+<div *ngIf="!isLoading" class="flex flex-col-reverse sm:flex-row h-screen overflow-hidden animate-fade-in">
+  <!-- Side Navbar - Bottom on mobile, Side on desktop -->
+  <div class="w-full h-16 sm:h-auto sm:w-20 lg:w-28 flex-shrink-0 z-50">
     <app-navbar [activeView]="currentView" (viewChange)="onViewChange($event)"></app-navbar>
   </div>
 
-  <!-- Main Map View (Remaining width) -->
-  <div class="flex-1">
+  <!-- Main Map View (Remaining width/height) -->
+  <div class="flex-1 relative w-full h-[calc(100vh-4rem)] sm:h-full">
     <app-weather-map *ngIf="currentView === 'weather'"></app-weather-map>
     <app-emergencies-map *ngIf="currentView === 'emergencies'"></app-emergencies-map>
   </div>

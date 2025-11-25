@@ -1,6 +1,7 @@
 /* Splash Screen Animations */
 @keyframes pulse-slow {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
@@ -12,4 +13,21 @@
 
 .animate-pulse-slow {
   animation: pulse-slow 2s ease-in-out infinite;
+}
+
+/* Mobile optimization for splash screen */
+@media (max-height: 667px) {
+  /* For shorter phone screens like iPhone SE */
+  .animate-slide-up {
+    animation: none;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 380px) {
+  /* For very small phones */
+  .animate-pulse-slow {
+    animation-duration: 3s;
+  }
 }

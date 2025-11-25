@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EmergencyReportButton } from '../emergency-report-button/emergency-report-button';
 import { AiChatbotButton } from '../ai-chatbot-button/ai-chatbot-button';
@@ -16,8 +16,15 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
   private map?: L.Map;
   private markers: L.Marker[] = [];
   isStatsOpen = false;
+  isFiltersExpanded = false;
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
+  emergencyTypes = [
+    { id: 'fire', label: 'Fire', icon: '🔥', active: true },
+    { id: 'flood', label: 'Flood', icon: '🌊', active: true },
+    { id: 'earthquake', label: 'Earthquake', icon: '🏚️', active: true },
+  ];
+
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef, private elementRef: ElementRef) {}
 
   //get emergencies from JSON file
   // public/assets/json/emergencies.json
@@ -64,7 +71,7 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
       this.initMap();
-      this.addEmergencyMarkers();
+      // Markers will be added when data loads
   }
 
   ngOnDestroy(): void {
@@ -112,7 +119,7 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
   private addEmergencyMarkers(): void {
     if (!this.map) return;
 
-    this.emergencies.forEach((emergency: any) => {
+    this.getFilteredEmergencies().forEach((emergency: any) => {
       const typeColor = this.getEmergencyTypeColor(emergency.type);
       const icon = this.getEmergencyIcon(emergency.type);
 
@@ -147,13 +154,21 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
     this.addEmergencyMarkers();
   }
 
+  getFilteredEmergencies() {
+    const activeTypes = this.emergencyTypes.filter(t => t.active).map(t => t.id);
+    return this.emergencies.filter(e => activeTypes.includes(e.type));
+  }
+
+  toggleFilter(typeId: string) {
+    const type = this.emergencyTypes.find(t => t.id === typeId);
+    if (type) {
+      type.active = !type.active;
+      this.updateMarkers();
+    }
+  }
+
   getEmergencyIcon(type: string): string {
-    const icons: { [key: string]: string } = {
-      'fire': '🔥',
-      'flood': '🌊',
-      'earthquake': '🏚️'
-    };
-    return icons[type] || '⚠️';
+    return this.emergencyTypes.find(t => t.id === type)?.icon || '⚠️';
   }
 
   getEmergencyTypeColor(type: string): string {
@@ -178,13 +193,30 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
     return this.emergencies.filter(e => e.severity === severity).length;
   }
 
-  getEmergencyCountByType(type: string): number {
-    const count = this.emergencies.filter(e => e.type === type).length;
-    console.log(`Count for ${type}:`, count, 'Total emergencies:', this.emergencies.length);
-    return count;
+  getEmergencyCountByType(typeId: string): number {
+    return this.emergencies.filter(e => e.type === typeId).length;
+  }
+
+  getActiveFilterCount(): number {
+    return this.emergencyTypes.filter(t => t.active).length;
   }
 
   toggleStats(): void {
     this.isStatsOpen = !this.isStatsOpen;
+  }
+
+  toggleFiltersExpanded(event: Event) {
+    event.stopPropagation();
+    this.isFiltersExpanded = !this.isFiltersExpanded;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (this.isFiltersExpanded) {
+      const clickedInside = this.elementRef.nativeElement.contains(event.target);
+      if (!clickedInside) {
+        this.isFiltersExpanded = false;
+      }
+    }
   }
 }

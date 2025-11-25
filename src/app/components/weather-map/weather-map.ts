@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WeatherAlertCard } from '../weather-alert-card/weather-alert-card';
 import { AiChatbotButton } from '../ai-chatbot-button/ai-chatbot-button';
 import * as L from 'leaflet';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-weather-map',
@@ -31,24 +32,9 @@ export class WeatherMap implements OnInit, AfterViewInit, OnDestroy {
     { id: 12, name: 'Lourdes Sur Evacuation Center', lat: 15.1480, lng: 120.5920, capacity: 550, status: 'available' },
   ];
 
-  weatherAlerts = [
-    {
-      id: 1,
-      type: 'typhoon',
-      severity: 'high',
-      title: 'Typhoon Uwan',
-      message: 'Typhoon Uwan is expected to hit Angeles City. Signal #3 has been raised. Strong winds and heavy rainfall expected. Secure loose items, charge devices, and prepare a 3-day emergency kit.',
-      timestamp: new Date()
-    },
-    {
-      id: 2,
-      type: 'flood',
-      severity: 'high',
-      title: 'Flooding Alert',
-      message: 'Flooding alert for Angeles City due to Typhoon Uwan. Low-lying areas are at high risk. Residents are advised to move to higher ground and prepare for possible evacuation.',
-      timestamp: new Date()
-    }
-  ];
+  weatherAlerts: any[] = [];
+
+  constructor(private http: HttpClient, private zone: NgZone) {}
 
   ngOnInit(): void {
     // Fix for default marker icon issue with webpack
@@ -71,6 +57,8 @@ export class WeatherMap implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
       this.initMap();
       this.addEvacuationMarkers();
+
+      this.fetchWeatherAlerts();
   }
 
   ngOnDestroy(): void {
@@ -156,5 +144,31 @@ export class WeatherMap implements OnInit, AfterViewInit, OnDestroy {
 
   toggleCenters(): void {
     this.isCentersOpen = !this.isCentersOpen;
+  }
+
+  private fetchWeatherAlerts(): void {
+    const url = 'https://hackathon-flow.stage.cloud.cloudstaff.com/webhook/9cec53fa-93b4-440d-abf9-1adc685a122a/incoming-disaster?q=8.72902001373351,125.75056459392184';
+
+    this.http.get<any>(url).subscribe({
+      next: (response) => {
+        if (response && response.incoming_disasters) {
+          this.zone.run(() => {
+            this.weatherAlerts = response.incoming_disasters.map((d: any, index: number) => ({
+              id: index + 1,
+              type: d.type,
+              severity: d.severity,
+              title: d.title,
+              message: d.message,
+              timestamp: new Date(d.timestamp)
+            }));
+          });
+
+          console.log('Loaded disaster alerts', this.weatherAlerts);
+        }
+      },
+      error: (error) => {
+        console.error('Failed to load disaster alerts', error);
+      }
+    });
   }
 }

@@ -33,6 +33,7 @@ export class WeatherAlertCard {
       case 'high': return 'bg-white border-l-4 border-red-500';
       case 'medium': return 'bg-white border-l-4 border-orange-500';
       case 'low': return 'bg-white border-l-4 border-blue-500';
+      case 'critical': return 'bg-white border-l-4 border-purple-500';
       default: return 'bg-white border-l-4 border-blue-500';
     }
   }
@@ -42,6 +43,7 @@ export class WeatherAlertCard {
       case 'high': return 'bg-red-500 text-white border-red-500';
       case 'medium': return 'bg-orange-500 text-white border-orange-500';
       case 'low': return 'bg-blue-500 text-white border-blue-500';
+      case 'critical': return 'bg-purple-500 text-white border-purple-500';
       default: return 'bg-blue-500 text-white border-blue-500';
     }
   }
@@ -51,6 +53,7 @@ export class WeatherAlertCard {
       case 'high': return 'bg-red-500 text-white';
       case 'medium': return 'bg-orange-500 text-white';
       case 'low': return 'bg-blue-500 text-white';
+      case 'critical': return 'bg-purple-500 text-white';
       default: return 'bg-blue-500 text-white';
     }
   }
@@ -61,6 +64,9 @@ export class WeatherAlertCard {
       case 'storm-surge': return '🌊';
       case 'wind': return '💨';
       case 'flood': return '🌧️';
+      case 'landslide': return '🏞️';
+      case 'heavy-rain': return '☔';
+      case 'earthquake': return '🌍';
       default: return '⚠️';
     }
   }
@@ -70,6 +76,7 @@ export class WeatherAlertCard {
       case 'high': return 'bg-red-50/50';
       case 'medium': return 'bg-orange-50/50';
       case 'low': return 'bg-blue-50/50';
+      case 'critical': return 'bg-purple-50/50';
       default: return 'bg-blue-50/50';
     }
   }
@@ -79,6 +86,7 @@ export class WeatherAlertCard {
       case 'high': return 'btn-error text-white';
       case 'medium': return 'btn-warning text-white';
       case 'low': return 'btn-info text-white';
+      case 'critical': return 'btn-purple text-white';
       default: return 'btn-info text-white';
     }
   }
@@ -88,6 +96,7 @@ export class WeatherAlertCard {
       case 'high': return 'bg-red-500';
       case 'medium': return 'bg-orange-500';
       case 'low': return 'bg-blue-500';
+      case 'critical': return 'bg-purple-500';
       default: return 'bg-blue-500';
     }
   }

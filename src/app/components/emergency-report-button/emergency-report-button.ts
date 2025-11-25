@@ -153,7 +153,7 @@ export class EmergencyReportButton implements OnInit {
         const newReport = {
           id: oldData.length + 1, // Random ID for demo purposes
           type: this.selectedType,
-          location: 'User provided location or GPS coordinates',
+          location: this.userAdrress,
           lat: this.latitude,
           lng: this.longitude,
           severity: 'medium', // Default severity for demo purposes

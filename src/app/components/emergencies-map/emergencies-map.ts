@@ -54,23 +54,18 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private getEmergencies() {
-    this.http.get<any[]>('assets/json/emergencies.json').subscribe({
-      next: (data: any) => {
-        console.log('Raw data received:', data);
-        if (Array.isArray(data)) {
-          this.emergencies = data;
-          console.log('Emergencies set:', this.emergencies);
-        } else {
-          this.emergencies = [];
-          console.log('Data is not an array');
-        }
-        this.updateMarkers();
-        this.cdr.detectChanges();
-      },
-      error: (error) => {
-        console.error('Error loading emergencies:', error);
+    this.http.get<any[]>('https://api.jsonbin.io/v3/b/692432b0d0ea881f40fcb70a', {
+      headers: {
+        'X-Master-Key': environment.jsonBinApiKey
+      }
+    }).subscribe((data: any) => {
+      if (Array.isArray(data.record)) {
+        this.emergencies = data.record;
+      } else {
         this.emergencies = [];
       }
+      console.log('Fetched emergencies:', this.emergencies);
+      this.updateMarkers();
     });
   }
 

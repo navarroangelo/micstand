@@ -124,13 +124,15 @@
           class="bg-base-200/60 rounded-lg p-3 border-l-3 transition-all"
           [class.border-error]="alert.severity === 'high'"
           [class.border-warning]="alert.severity === 'medium'"
-          [class.border-info]="alert.severity === 'low'">
+          [class.border-info]="alert.severity === 'low'"
+          [class.border-danger]="alert.severity === 'critical'">
           <div class="flex items-start gap-2.5">
             <div
               class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
               [class.bg-error/20]="alert.severity === 'high'"
               [class.bg-warning/20]="alert.severity === 'medium'"
-              [class.bg-info/20]="alert.severity === 'low'">
+              [class.bg-info/20]="alert.severity === 'low'"
+              [class.bg.danger/20]="alert.serverity === 'critical'">
               <span class="text-lg">{{ alert.type === 'typhoon' ? '🌀' : '🌊' }}</span>
             </div>
             <div class="flex-1 min-w-0">
@@ -140,7 +142,8 @@
                   class="badge badge-xs font-bold uppercase flex-shrink-0 text-[9px]"
                   [class.badge-error]="alert.severity === 'high'"
                   [class.badge-warning]="alert.severity === 'medium'"
-                  [class.badge-info]="alert.severity === 'low'">
+                  [class.badge-info]="alert.severity === 'low'"
+                  [class.badge-danger]="alert.serveirty === 'critical'">
                   {{ alert.severity }}
                 </span>
               </div>

@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WeatherAlertCard } from '../weather-alert-card/weather-alert-card';
 import { AiChatbotButton } from '../ai-chatbot-button/ai-chatbot-button';
 import * as L from 'leaflet';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-weather-map',
@@ -15,6 +16,8 @@ export class WeatherMap implements OnInit, AfterViewInit, OnDestroy {
   private markers: L.Marker[] = [];
   isAlertsExpanded = false;
   isCentersOpen = false;
+
+  weatherAlerts: any[] = [];
 
   evacuationCenters = [
     { id: 1, name: 'Balibago Evacuation Center', lat: 15.1663, lng: 120.5901, capacity: 500, status: 'available' },
@@ -31,27 +34,9 @@ export class WeatherMap implements OnInit, AfterViewInit, OnDestroy {
     { id: 12, name: 'Lourdes Sur Evacuation Center', lat: 15.1480, lng: 120.5920, capacity: 550, status: 'available' },
   ];
 
-  weatherAlerts = [
-    {
-      id: 1,
-      type: 'typhoon',
-      severity: 'high',
-      title: 'Typhoon Uwan',
-      message: 'Typhoon Uwan is expected to hit Angeles City. Signal #3 has been raised. Strong winds and heavy rainfall expected. Secure loose items, charge devices, and prepare a 3-day emergency kit.',
-      timestamp: new Date()
-    },
-    {
-      id: 2,
-      type: 'flood',
-      severity: 'high',
-      title: 'Flooding Alert',
-      message: 'Flooding alert for Angeles City due to Typhoon Uwan. Low-lying areas are at high risk. Residents are advised to move to higher ground and prepare for possible evacuation.',
-      timestamp: new Date()
-    }
-  ];
+  constructor(private http: HttpClient, private zone: NgZone) {}
 
   ngOnInit(): void {
-    // Fix for default marker icon issue with webpack
     const iconRetinaUrl = 'assets/marker-icon-2x.png';
     const iconUrl = 'assets/marker-icon.png';
     const shadowUrl = 'assets/marker-shadow.png';
@@ -66,11 +51,14 @@ export class WeatherMap implements OnInit, AfterViewInit, OnDestroy {
       shadowSize: [41, 41]
     });
     L.Marker.prototype.options.icon = iconDefault;
+
+
   }
 
   ngAfterViewInit(): void {
-      this.initMap();
-      this.addEvacuationMarkers();
+    this.initMap();
+    this.addEvacuationMarkers();
+    // this.fetchWeatherAlerts();
   }
 
   ngOnDestroy(): void {
@@ -80,7 +68,6 @@ export class WeatherMap implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private initMap(): void {
-    // Center on Angeles City, Philippines
     this.map = L.map('weatherMap', {
       center: [15.1433, 120.5833],
       zoom: 13,
@@ -95,7 +82,6 @@ export class WeatherMap implements OnInit, AfterViewInit, OnDestroy {
       zoomAnimation: true
     });
 
-    // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       minZoom: 3,
@@ -107,20 +93,19 @@ export class WeatherMap implements OnInit, AfterViewInit, OnDestroy {
       crossOrigin: true
     }).addTo(this.map);
 
-    // Force map to invalidate size multiple times to ensure proper rendering
     setTimeout(() => this.map?.invalidateSize(true), 0);
     setTimeout(() => this.map?.invalidateSize(true), 100);
     setTimeout(() => this.map?.invalidateSize(true), 250);
     setTimeout(() => this.map?.invalidateSize(true), 500);
     setTimeout(() => this.map?.invalidateSize(true), 1000);
+    setTimeout(() => this.fetchWeatherAlerts(), 2000);
   }
 
   private addEvacuationMarkers(): void {
     if (!this.map) return;
 
-    // Use highly contrasting colors that match legend exactly
-    const availableColor = '#10b981'; // Vibrant emerald green
-    const limitedColor = '#f59e0b';   // Bright amber orange
+    const availableColor = '#10b981';
+    const limitedColor = '#f59e0b';
 
     this.evacuationCenters.forEach(center => {
       const statusColor = center.status === 'available' ? availableColor : limitedColor;
@@ -150,11 +135,37 @@ export class WeatherMap implements OnInit, AfterViewInit, OnDestroy {
     this.isAlertsExpanded = !this.isAlertsExpanded;
   }
 
+  toggleCenters(): void {
+    this.isCentersOpen = !this.isCentersOpen;
+  }
+
   getEvacuationCenterCountByStatus(status: string): number {
     return this.evacuationCenters.filter(c => c.status === status).length;
   }
 
-  toggleCenters(): void {
-    this.isCentersOpen = !this.isCentersOpen;
+  private fetchWeatherAlerts(): void {
+    const url = 'https://hackathon-flow.stage.cloud.cloudstaff.com/webhook/9cec53fa-93b4-440d-abf9-1adc685a122a/incoming-disaster?q=8.72902001373351,125.75056459392184';
+
+    this.http.get<any>(url).subscribe({
+      next: (response) => {
+        if (response && response.incoming_disasters) {
+          this.zone.run(() => {
+            this.weatherAlerts = response.incoming_disasters.map((d: any, index: number) => ({
+              id: index + 1,
+              type: d.type,
+              severity: d.severity,
+              title: d.title,
+              message: d.message,
+              timestamp: new Date(d.timestamp)
+            }));
+          });
+
+          console.log('Loaded disaster alerts', this.weatherAlerts);
+        }
+      },
+      error: (error) => {
+        console.error('Failed to load disaster alerts', error);
+      }
+    });
   }
 }

@@ -1,4 +1,4 @@
-<div class="relative w-full h-screen bg-base-100">
+<div class="relative w-full h-full bg-base-100">
   <!-- Leaflet Map Container -->
   <div id="weatherMap" class="w-full h-full"></div>
 
@@ -28,7 +28,7 @@
       <!-- Map Legend -->
       <div class="bg-base-100/95 backdrop-blur-lg rounded-2xl shadow-2xl border-2 border-base-300/30 w-full sm:w-auto sm:min-w-[200px] lg:min-w-[240px] hover:shadow-xl transition-all duration-300">
         <!-- Header - Clickable on Mobile -->
-        <button 
+        <button
           class="w-full flex items-center justify-between gap-2 p-4 sm:p-5 sm:pointer-events-none"
           (click)="toggleCenters()">
           <div class="flex items-center gap-2">
@@ -38,19 +38,19 @@
             </svg>
             <h3 class="font-bold text-sm sm:text-base text-base-content">Evacuation Centers</h3>
           </div>
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            class="h-5 w-5 text-base-content transition-transform duration-300 sm:hidden" 
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 text-base-content transition-transform duration-300 sm:hidden"
             [class.rotate-180]="isCentersOpen"
-            fill="none" 
-            viewBox="0 0 24 24" 
+            fill="none"
+            viewBox="0 0 24 24"
             stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
         </button>
 
         <!-- Centers Content - Collapsible on Mobile -->
-        <div 
+        <div
           class="overflow-hidden transition-all duration-300 ease-in-out"
           [class.max-h-0]="!isCentersOpen"
           [class.max-h-96]="isCentersOpen"

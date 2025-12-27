@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Navbar } from './components/navbar/navbar';
 import { WeatherMap } from './components/weather-map/weather-map';
@@ -11,17 +11,8 @@ import { CommonModule } from '@angular/common';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App implements OnInit {
+export class App {
   currentView: 'weather' | 'emergencies' = 'weather';
-  isLoading = true;
-
-  constructor() {}
-
-  ngOnInit() {
-    setTimeout(() => {
-      this.isLoading = false;
-    }, 2500);
-  }
 
   onViewChange(view: 'weather' | 'emergencies') {
     this.currentView = view;

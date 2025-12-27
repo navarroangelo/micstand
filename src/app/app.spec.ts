@@ -16,23 +16,16 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', async () => {
-    const fixture = TestBed.createComponent(App);
-    fixture.detectChanges();
-    await fixture.whenStable();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Project SINAG');
-  });
-
-  it('should initialize with loading state', () => {
-    const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app.isLoading).toBe(true);
-  });
-
   it('should default to weather view', () => {
     const fixture = TestBed.createComponent(App);
     const app = fixture.componentInstance;
     expect(app.currentView).toBe('weather');
+  });
+
+  it('should change view when onViewChange is called', () => {
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    app.onViewChange('emergencies');
+    expect(app.currentView).toBe('emergencies');
   });
 });

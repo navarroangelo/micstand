@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-ai-chatbot-button',
@@ -13,9 +12,7 @@ export class AiChatbotButton implements OnInit {
   isChatOpen = false;
   public form: FormGroup = new FormGroup({});
 
-  constructor(private http: HttpClient) {
-    
-  }
+  constructor() {}
 
   ngOnInit() {
     this.form = new FormGroup({
@@ -28,9 +25,9 @@ export class AiChatbotButton implements OnInit {
   }
 
   onSubmit(event: Event) {
-    if(this.form.valid) {
+    if (this.form.valid) {
       const userInput = this.form.get('userInput')?.value;
-      console.log('User Input:', userInput);
+      this.form.reset();
     }
   }
 }

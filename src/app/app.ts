@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Navbar } from './components/navbar/navbar';
 import { WeatherMap } from './components/weather-map/weather-map';
@@ -15,13 +15,11 @@ export class App implements OnInit {
   currentView: 'weather' | 'emergencies' = 'weather';
   isLoading = true;
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor() {}
 
   ngOnInit() {
-    // Show splash screen for 2.5 seconds
     setTimeout(() => {
       this.isLoading = false;
-      this.cdr.detectChanges();
     }, 2500);
   }
 

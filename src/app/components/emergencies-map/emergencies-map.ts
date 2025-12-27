@@ -1,10 +1,12 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EmergencyReportButton } from '../emergency-report-button/emergency-report-button';
 import { AiChatbotButton } from '../ai-chatbot-button/ai-chatbot-button';
 import * as L from 'leaflet';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Subject, takeUntil, catchError, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { Emergency, EmergencyApiResponse } from '../../models/emergency.model';
 
 @Component({
   selector: 'app-emergencies-map',
@@ -15,13 +17,11 @@ import { environment } from '../../../environments/environment';
 export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
   private map?: L.Map;
   private markers: L.Marker[] = [];
+  private destroy$ = new Subject<void>();
   isStatsOpen = false;
+  emergencies: Emergency[] = [];
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
-
-  //get emergencies from JSON file
-  // public/assets/json/emergencies.json
-  emergencies: any[] = [];
+  constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
     this.getEmergencies();
@@ -47,27 +47,34 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private getEmergencies() {
-    this.http.get<any[]>('https://api.jsonbin.io/v3/b/692432b0d0ea881f40fcb70a', {
+    this.http.get<{ record: Emergency[] }>('https://api.jsonbin.io/v3/b/692432b0d0ea881f40fcb70a', {
       headers: {
         'X-Master-Key': environment.jsonBinApiKey
       }
-    }).subscribe((data: any) => {
-      if (Array.isArray(data.record)) {
+    }).pipe(
+      takeUntil(this.destroy$),
+      catchError((error: HttpErrorResponse) => {
+        this.emergencies = [];
+        return of(null);
+      })
+    ).subscribe((data) => {
+      if (data && Array.isArray(data.record)) {
         this.emergencies = data.record;
       } else {
         this.emergencies = [];
       }
-      console.log('Fetched emergencies:', this.emergencies);
       this.updateMarkers();
     });
   }
 
   ngAfterViewInit(): void {
-      this.initMap();
-      this.addEmergencyMarkers();
+    this.initMap();
+    this.addEmergencyMarkers();
   }
 
   ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
     if (this.map) {
       this.map.remove();
     }
@@ -112,7 +119,7 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
   private addEmergencyMarkers(): void {
     if (!this.map) return;
 
-    this.emergencies.forEach((emergency: any) => {
+    this.emergencies.forEach((emergency: Emergency) => {
       const typeColor = this.getEmergencyTypeColor(emergency.type);
       const icon = this.getEmergencyIcon(emergency.type);
 
@@ -123,14 +130,14 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
         iconAnchor: [17, 17]
       });
 
-      const marker = L.marker([emergency.lat, emergency.lng], { icon: customIcon })
+      const marker = L.marker([emergency.location.lat, emergency.location.lng], { icon: customIcon })
         .addTo(this.map!)
         .bindPopup(`
           <div style="min-width: 200px;">
-            <h3 style="margin: 0 0 8px 0; font-weight: bold;">${emergency.location}</h3>
+            <h3 style="margin: 0 0 8px 0; font-weight: bold;">${emergency.address}</h3>
             <p style="margin: 4px 0;"><strong>Type:</strong> ${emergency.type}</p>
             <p style="margin: 4px 0;"><strong>Severity:</strong> <span style="color: ${this.getSeverityColor(emergency.severity)}; text-transform: capitalize;">${emergency.severity}</span></p>
-            <p style="margin: 4px 0; font-size: 12px; color: #666;"><strong>Reported:</strong> ${emergency.timestamp.toLocaleString()}</p>
+            <p style="margin: 4px 0; font-size: 12px; color: #666;"><strong>Reported:</strong> ${new Date(emergency.timestamp).toLocaleString()}</p>
           </div>
         `);
 
@@ -179,9 +186,7 @@ export class EmergenciesMap implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getEmergencyCountByType(type: string): number {
-    const count = this.emergencies.filter(e => e.type === type).length;
-    console.log(`Count for ${type}:`, count, 'Total emergencies:', this.emergencies.length);
-    return count;
+    return this.emergencies.filter(e => e.type === type).length;
   }
 
   toggleStats(): void {
